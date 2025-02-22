@@ -1,0 +1,42 @@
+{
+  "$schema": "https://smapi.io/schemas/content-patcher.json",
+  "Changes": [
+    // Let Krobus sell an "item" that actually gives you money back
+    {
+      // debug shop FishShop
+      "Action": "EditData",
+      "Target": "Data/Shops",
+      "TargetField": [
+        "ShadowShop",
+        "Items"
+      ],
+      "Entries": {
+        "{{ModId}}_GibMoney": {
+          "Id": "{{ModId}}_GibMoney",
+          "ItemId": "mushymato.PeliQ_ACTION_SALABLE {{ModId}}_GibMoney",
+          "Price": 0,
+          "ObjectDisplayName": "Gib Money",
+          "ActionsOnPurchase": [
+            "AddMoney 10000",
+          ]
+        }
+      }
+    },
+    {
+      "Action": "EditData",
+      "Target": "Data/Objects",
+      "Entries": {
+        "{{ModId}}_GibMoney": {
+          // Can choose to set display name in the item query instead of here
+          // "DisplayName": "[LocalizedText Strings\\Objects:GoldCoin_Name]",
+          "Description": "[LocalizedText Strings\\Objects:GoldCoin_Description]",
+          "Texture": "TileSheets\\Objects_2",
+          "SpriteIndex": 70,
+          "CustomFields": {
+            "mushymato.PeliQ/PurchaseSound": "coin"
+          }
+        },
+      }
+    }
+  ]
+}

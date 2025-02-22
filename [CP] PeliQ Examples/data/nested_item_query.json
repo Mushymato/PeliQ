@@ -1,0 +1,27 @@
+{
+  "$schema": "https://smapi.io/schemas/content-patcher.json",
+  "Changes": [
+    // Let Willy sell every kind of bait in the game
+    {
+      // debug shop FishShop
+      "Action": "EditData",
+      "Target": "Data/Shops",
+      "TargetField": [
+        "FishShop",
+        "Items"
+      ],
+      "Entries": {
+        "{{ModId}}_AllBait": {
+          "Id": "{{ModId}}_AllBait_Outer",
+          "ItemId": "ALL_ITEMS (O)",
+          "PerItemCondition": "ITEM_CONTEXT_TAG Target category_fish",
+          "ModData": {
+            "Id": "{{ModId}}_AllBait_Inner",
+            "ItemId": "FLAVORED_ITEM Bait mushymato.PeliQ_NestedId",
+            "UnrelatedModData": "some value here i suppose"
+          }
+        }
+      }
+    },
+  ]
+}

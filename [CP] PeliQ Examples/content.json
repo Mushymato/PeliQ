@@ -1,0 +1,17 @@
+{
+  "$schema": "https://smapi.io/schemas/content-patcher.json",
+  "Format": "2.5.0",
+  "Changes": [
+    // Let Willy sell every kind of bait in the game
+    {
+      // debug shop FishShop
+      "Action": "Include",
+      "FromFile": "data/nested_item_query.json"
+    },
+    {
+      // debug shop FishShop
+      "Action": "Include",
+      "FromFile": "data/action_salable.json"
+    },
+  ]
+}
