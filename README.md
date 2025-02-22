@@ -25,6 +25,7 @@ For example, this item query, if placed under a shop Items field, makes that sho
 ```
 
 The inner item query:
+
 - is required to have `mushymato.PeliQ_NestedId` as part of `ItemId`, i.e. cannot use non-ItemId queries here
 - can have the generic item query fields, as well as `Condition` GSQ
 - can only nest once
@@ -65,6 +66,7 @@ The custom asset is a list of item queries with condition.
 ```
 
 These can be used in:
+
 - Item queries: `mushymato.PeliQ_STORED_QUERY <queryId>` in the ItemId of another ItemQuery
 - Trigger action: `mushymato.PeliQ_AddItemByQuery <queryId> [ItemQuerySearchMode]`
 - Tile Action and TouchAction: `mushymato.PeliQ_AddItemByQuery <queryId> [ItemQuerySearchMode] [isDebris]`
@@ -73,6 +75,7 @@ These can be used in:
 ##### ItemQuerySearchMode
 
 One of:
+
 - `All`
 - `AllOfTypeItem`
 - `FirstOfTypeItem`
@@ -93,5 +96,6 @@ The trigger action always add item directly to player inventory, while the 2 map
 - `itemId` is not qualified and must be an `Data/Objects` entry.
 
 There are 2 custom fields that can be set on the `Data/Objects` entry of your placeholder object.
+
 - `mushymato.PeliQ/ExitOnPurchase`: Exit the menu immediately on purchase
 - `mushymato.PeliQ/PurchaseSound`: Sound to play on purchase
