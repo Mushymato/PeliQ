@@ -8,4 +8,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- Working on this spiritually.
+- ActionSalable: placeholder item for using actions in shops
+- NestedQuery: do item query using result of another item query
+- StoredQuery: item queries custom asset for item queries/action/map action/mail

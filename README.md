@@ -68,6 +68,7 @@ These can be used in:
 - Item queries: `mushymato.PeliQ_STORED_QUERY <queryId>` in the ItemId of another ItemQuery
 - Trigger action: `mushymato.PeliQ_AddItemByQuery <queryId> [ItemQuerySearchMode]`
 - Tile Action and TouchAction: `mushymato.PeliQ_AddItemByQuery <queryId> [ItemQuerySearchMode] [isDebris]`
+- Mail: `%peliQ <queryId> [ItemQuerySearchMode] %%` in mail, the items will appear on mail and need to be removed one by one.
 
 ##### ItemQuerySearchMode
 
