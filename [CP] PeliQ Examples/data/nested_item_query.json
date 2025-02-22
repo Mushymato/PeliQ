@@ -16,8 +16,10 @@
           "ItemId": "ALL_ITEMS (O)",
           "PerItemCondition": "ITEM_CONTEXT_TAG Target category_fish",
           "ModData": {
+            // these use exact same keys as item query
             "Id": "{{ModId}}_AllBait_Inner",
             "ItemId": "FLAVORED_ITEM Bait mushymato.PeliQ_NestedId",
+            // fine to have other mod data
             "UnrelatedModData": "some value here i suppose"
           }
         }

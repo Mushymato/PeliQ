@@ -1,0 +1,85 @@
+{
+  "$schema": "https://smapi.io/schemas/content-patcher.json",
+  "Changes": [
+    // A reusable stored item query that can be used in action, tile action, and map action
+    {
+      "Action": "EditData",
+      "Target": "mushymato.PeliQ/ItemQueries",
+      "Entries": {
+        "{{ModId}}_Jelly": [
+          {
+            "Id": "{{ModId}}_Jelly1",
+            "ItemId": "(O)CaveJelly",
+          },
+          {
+            "Id": "{{ModId}}_Jelly2",
+            "ItemId": "(O)RiverJelly",
+          },
+          {
+            "Id": "{{ModId}}_Jelly3",
+            "ItemId": "(O)SeaJelly",
+          }
+        ],
+        "{{ModId}}_Fish": [
+          {
+            "Id": "{{ModId}}_Fish",
+            "ItemId": "ALL_ITEMS (O)",
+            "PerItemCondition": "ITEM_CONTEXT_TAG Target category_fish",
+          }
+        ]
+      }
+    },
+    // usage as action: debug action mushymato.PeliQ_AddItemByQuery mushymato.PeliQ.Examples_Jelly AllOfTypeItem
+    // usage as item query
+    {
+      // debug shop ShadowShop
+      "Action": "EditData",
+      "Target": "Data/Shops",
+      "TargetField": [
+        "ShadowShop",
+        "Items"
+      ],
+      "Entries": {
+        "{{ModId}}_Jelly": {
+          "Id": "{{ModId}}_Jelly",
+          "ItemId": "mushymato.PeliQ_STORED_QUERY {{ModId}}_Jelly"
+        }
+      }
+    },
+    // usage as map actions
+    {
+      "Action": "EditMap",
+      "Target": "Maps/Backwoods",
+      "MapTiles": [
+        {
+          "Position": {
+            "X": 14,
+            "Y": 28
+          },
+          "Layer": "Back",
+          "SetProperties": {
+            "TouchAction": "mushymato.PeliQ_AddItemByQuery {{ModId}}_Fish RandomOfTypeItem"
+          }
+        },
+        {
+          "Position": {
+            "X": 16,
+            "Y": 28
+          },
+          "Layer": "Buildings",
+          "SetProperties": {
+            "Action": "mushymato.PeliQ_AddItemByQuery {{ModId}}_Jelly AllOfTypeItem"
+          }
+        }
+      ]
+    },
+    // usage as mail: debug ShowMail mushymato.PeliQ.Examples_JellyMail
+    {
+      "Action": "EditData",
+      "Target": "Data/mail",
+      "Entries": {
+        "{{ModId}}_JellyMail": "Have some jelly. %peliQ {{ModId}}_Jelly AllOfTypeItem %%[#]Jelly"
+      }
+    }
+  ]
+}

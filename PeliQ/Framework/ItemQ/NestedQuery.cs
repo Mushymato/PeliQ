@@ -8,7 +8,7 @@ using StardewValley.Internal;
 namespace PeliQ.Framework.ItemQ;
 
 /// <summary>Allow item queries to be nested via ModData</summary>
-internal static class NestedItemQuery
+internal static class NestedQuery
 {
     private static string ItemQuery_NestedSourcePhrase => $"{ModEntry.ModId}_NestedResolve";
     private static string ItemQuery_NestedIdToken => $"{ModEntry.ModId}_NestedId";
@@ -32,7 +32,7 @@ internal static class NestedItemQuery
                         typeof(Item),
                     ]
                 ),
-                postfix: new HarmonyMethod(typeof(NestedItemQuery), nameof(ItemQueryResolver_TryResolve_Postfix))
+                postfix: new HarmonyMethod(typeof(NestedQuery), nameof(ItemQueryResolver_TryResolve_Postfix))
             );
         }
         catch (Exception err)
@@ -47,13 +47,17 @@ internal static class NestedItemQuery
         ref IList<ItemQueryResult> __result
     )
     {
-        if (data.ModData != null && context.SourcePhrase != ItemQuery_NestedSourcePhrase)
+        if (data.ModData != null)
         {
             GenericSpawnItemDataWithCondition? nestedSpawn =
                 JsonConvert.DeserializeObject<GenericSpawnItemDataWithCondition>(
                     JsonConvert.SerializeObject(data.ModData)
                 );
-            if (nestedSpawn == null)
+            if (
+                nestedSpawn == null
+                || nestedSpawn.ItemId == null
+                || !nestedSpawn.ItemId.Contains(ItemQuery_NestedIdToken)
+            )
                 return;
             List<ItemQueryResult> nestedResults = [];
             foreach (ItemQueryResult res in __result)

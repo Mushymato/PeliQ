@@ -24,8 +24,8 @@ public static class ActionSalable
     )
     {
         string[] array = ItemQueryResolver.Helpers.SplitArguments(arguments);
-        if (!ArgUtility.TryGet(array, 0, out string objectId, out string error1, allowBlank: false, "string objectId"))
-            return ItemQueryResolver.Helpers.ErrorResult(key, arguments, logError, error1);
+        if (!ArgUtility.TryGet(array, 0, out string objectId, out string error, allowBlank: false, "string objectId"))
+            return ItemQueryResolver.Helpers.ErrorResult(key, arguments, logError, error);
         return [new ItemQueryResult(new ActionSalableObject(objectId))];
     }
 }

@@ -3,7 +3,7 @@
   "Changes": [
     // Let Krobus sell an "item" that actually gives you money back
     {
-      // debug shop FishShop
+      // debug shop ShadowShop
       "Action": "EditData",
       "Target": "Data/Shops",
       "TargetField": [

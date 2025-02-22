@@ -26,7 +26,8 @@ public class ModEntry : Mod
         harm = new(ModId);
 
         Framework.ItemQ.ActionSalable.Register();
-        Framework.ItemQ.NestedItemQuery.Register();
+        Framework.ItemQ.NestedQuery.Register();
+        Framework.ItemQ.StoredQuery.Register();
     }
 
     /// <summary>SMAPI static monitor Log wrapper</summary>
