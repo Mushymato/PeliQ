@@ -8,6 +8,7 @@ using StardewValley.Delegates;
 using StardewValley.GameData;
 using StardewValley.Internal;
 using StardewValley.Menus;
+using StardewValley.Objects;
 using StardewValley.Triggers;
 
 namespace PeliQ.Framework.ItemQ;
@@ -47,7 +48,7 @@ internal static class StoredQuery
         string[] args,
         int start,
         out string error,
-        [NotNullWhen(true)] out List<GenericSpawnItemDataWithCondition>? spawnDataList,
+        [NotNullWhen(true)] out List<PeliQSpawnItemData>? spawnDataList,
         [NotNullWhen(true)] out ItemQuerySearchMode itemQuerySearchMode
     )
     {
@@ -65,7 +66,10 @@ internal static class StoredQuery
         )
             return false;
         if (!IQData.TryGetValue(storedQueryId, out spawnDataList))
+        {
+            error = $"No query with ID '{storedQueryId}' defined in '{Asset_ItemQueries}'";
             return false;
+        }
         if (
             !ArgUtility.TryGetOptional(
                 args,
@@ -81,13 +85,107 @@ internal static class StoredQuery
         return true;
     }
 
-    private static IEnumerable<Item> ResolveItemQueryList(
-        List<GenericSpawnItemDataWithCondition> spawnDataList,
+    private static void ApplyMachineItemFields(
+        ref Item spawnedItem,
+        PeliQSpawnItemData spawnData,
+        ItemQueryContext context
+    )
+    {
+        Item? preserveItem = null;
+        if (!string.IsNullOrEmpty(spawnData.InputId))
+            preserveItem = ItemRegistry.Create(spawnData.InputId);
+        if (preserveItem == null && !string.IsNullOrEmpty(spawnData.PreserveId))
+            preserveItem = ItemRegistry.Create(spawnData.PreserveId);
+        if (preserveItem == null)
+            return;
+
+        if (spawnData.CopyColor)
+        {
+            Color? color =
+                (preserveItem is ColoredObject obj)
+                    ? new Color?(obj.color.Value)
+                    : ItemContextTagManager.GetColorFromTags(preserveItem);
+            if (color.HasValue && ColoredObject.TrySetColor(spawnedItem, color.Value, out var coloredItem))
+            {
+                spawnedItem = coloredItem;
+            }
+        }
+        if (spawnData.CopyQuality && preserveItem != null)
+        {
+            spawnedItem.Quality = preserveItem.Quality;
+            List<QuantityModifier> qualityModifiers = spawnData.QualityModifiers;
+            if (qualityModifiers != null && qualityModifiers.Count > 0)
+            {
+                spawnedItem.Quality = (int)
+                    Utility.ApplyQuantityModifiers(
+                        spawnedItem.Quality,
+                        spawnData.QualityModifiers,
+                        spawnData.QualityModifierMode,
+                        context.Location,
+                        context.Player,
+                        spawnedItem,
+                        preserveItem
+                    );
+            }
+        }
+        if (spawnedItem is SObject spawnedObject)
+        {
+            if (spawnData.ObjectInternalName != null)
+            {
+                spawnedObject.Name = string.Format(spawnData.ObjectInternalName, preserveItem?.Name ?? "");
+            }
+            if (spawnData.CopyPrice && preserveItem is SObject preserveObject1)
+            {
+                spawnedObject.Price = preserveObject1.Price;
+            }
+            List<QuantityModifier> priceModifiers = spawnData.PriceModifiers;
+            if (priceModifiers != null && priceModifiers.Count > 0)
+            {
+                spawnedObject.Price = (int)
+                    Utility.ApplyQuantityModifiers(
+                        spawnedObject.Price,
+                        spawnData.PriceModifiers,
+                        spawnData.PriceModifierMode,
+                        context.Location,
+                        context.Player,
+                        spawnedItem,
+                        preserveItem
+                    );
+            }
+            if (!string.IsNullOrWhiteSpace(spawnData.PreserveType))
+            {
+                spawnedObject.preserve.Value = (SObject.PreserveType)
+                    Enum.Parse(typeof(SObject.PreserveType), spawnData.PreserveType);
+            }
+            if (!string.IsNullOrWhiteSpace(spawnData.PreserveId))
+            {
+                string preserveId = spawnData.PreserveId;
+                if (!(preserveId == "DROP_IN"))
+                {
+                    if (preserveId == "DROP_IN_PRESERVE" && preserveItem is SObject preserveObject2)
+                    {
+                        spawnedObject.preservedParentSheetIndex.Value = preserveObject2?.GetPreservedItemId();
+                    }
+                    else
+                    {
+                        spawnedObject.preservedParentSheetIndex.Value = spawnData.PreserveId;
+                    }
+                }
+                else
+                {
+                    spawnedObject.preservedParentSheetIndex.Value = preserveItem?.ItemId;
+                }
+            }
+        }
+    }
+
+    internal static IEnumerable<Item> ResolveItemQueryList(
+        List<PeliQSpawnItemData> spawnDataList,
         ItemQuerySearchMode itemQuerySearchMode,
         ItemQueryContext context
     )
     {
-        foreach (GenericSpawnItemDataWithCondition spawnData in spawnDataList)
+        foreach (PeliQSpawnItemData spawnData in spawnDataList)
         {
             if (!GameStateQuery.CheckConditions(spawnData.Condition))
                 continue;
@@ -96,6 +194,7 @@ internal static class StoredQuery
             {
                 if (res.Item is Item item)
                 {
+                    ApplyMachineItemFields(ref item, spawnData, context);
                     yield return item;
                 }
             }
@@ -126,7 +225,7 @@ internal static class StoredQuery
                     args,
                     1,
                     out string _,
-                    out List<GenericSpawnItemDataWithCondition>? spawnDataList,
+                    out List<PeliQSpawnItemData>? spawnDataList,
                     out ItemQuerySearchMode itemQuerySearchMode
                 )
             )
@@ -170,7 +269,7 @@ internal static class StoredQuery
                 args,
                 1,
                 out string error,
-                out List<GenericSpawnItemDataWithCondition>? spawnDataList,
+                out List<PeliQSpawnItemData>? spawnDataList,
                 out ItemQuerySearchMode itemQuerySearchMode
             )
         )
@@ -218,7 +317,7 @@ internal static class StoredQuery
                 args,
                 1,
                 out error,
-                out List<GenericSpawnItemDataWithCondition>? spawnDataList,
+                out List<PeliQSpawnItemData>? spawnDataList,
                 out ItemQuerySearchMode itemQuerySearchMode
             )
         )
@@ -248,7 +347,7 @@ internal static class StoredQuery
                 args,
                 0,
                 out string error,
-                out List<GenericSpawnItemDataWithCondition>? spawnDataList,
+                out List<PeliQSpawnItemData>? spawnDataList,
                 out ItemQuerySearchMode itemQuerySearchMode
             )
         )
@@ -274,16 +373,14 @@ internal static class StoredQuery
         }
     }
 
-    private static Dictionary<string, List<GenericSpawnItemDataWithCondition>>? _iqData = null;
+    private static Dictionary<string, List<PeliQSpawnItemData>>? _iqData = null;
 
     /// <summary>Stored item query data</summary>
-    public static Dictionary<string, List<GenericSpawnItemDataWithCondition>> IQData
+    public static Dictionary<string, List<PeliQSpawnItemData>> IQData
     {
         get
         {
-            _iqData ??= Game1.content.Load<Dictionary<string, List<GenericSpawnItemDataWithCondition>>>(
-                Asset_ItemQueries
-            );
+            _iqData ??= Game1.content.Load<Dictionary<string, List<PeliQSpawnItemData>>>(Asset_ItemQueries);
             return _iqData;
         }
     }
@@ -291,7 +388,7 @@ internal static class StoredQuery
     private static void OnAssetRequested(object? sender, AssetRequestedEventArgs e)
     {
         if (e.Name.IsEquivalentTo(Asset_ItemQueries))
-            e.LoadFrom(() => new Dictionary<string, List<GenericSpawnItemDataWithCondition>>(), AssetLoadPriority.Low);
+            e.LoadFrom(() => new Dictionary<string, List<PeliQSpawnItemData>>(), AssetLoadPriority.Low);
     }
 
     private static void OnAssetInvalidated(object? sender, AssetsInvalidatedEventArgs e)

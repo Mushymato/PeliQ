@@ -49,22 +49,29 @@ internal static class NestedQuery
     {
         if (data.ModData != null)
         {
-            GenericSpawnItemDataWithCondition? nestedSpawn =
-                JsonConvert.DeserializeObject<GenericSpawnItemDataWithCondition>(
+            PeliQSpawnItemData? nestedSpawn = null;
+            try
+            {
+                nestedSpawn = JsonConvert.DeserializeObject<PeliQSpawnItemData>(
                     JsonConvert.SerializeObject(data.ModData)
                 );
-            if (
-                nestedSpawn == null
-                || nestedSpawn.ItemId == null
-                || !nestedSpawn.ItemId.Contains(ItemQuery_NestedIdToken)
-            )
+            }
+            catch (Exception ex)
+            {
+                ModEntry.Log($"Failed to convert nested query:\n {ex}");
                 return;
+            }
+            if (nestedSpawn == null)
+                return;
+            List<PeliQSpawnItemData> spawnItemDatas = [nestedSpawn];
             List<ItemQueryResult> nestedResults = [];
             foreach (ItemQueryResult res in __result)
             {
                 if (!GameStateQuery.CheckConditions(nestedSpawn.Condition))
                     continue;
                 if (res.Item != null)
+                {
+                    nestedSpawn.InputId = res.Item.QualifiedItemId;
                     nestedResults.AddRange(
                         ItemQueryResolver.TryResolve(
                             nestedSpawn,
@@ -72,6 +79,7 @@ internal static class NestedQuery
                             formatItemId: (token) => token.Replace(ItemQuery_NestedIdToken, res.Item.QualifiedItemId)
                         )
                     );
+                }
             }
             __result = nestedResults;
         }

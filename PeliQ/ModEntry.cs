@@ -25,9 +25,13 @@ public class ModEntry : Mod
         help = helper;
         harm = new(ModId);
 
+        Framework.GameStateQ.CountTrue.Register();
         Framework.ItemQ.ActionSalable.Register();
         Framework.ItemQ.NestedQuery.Register();
         Framework.ItemQ.StoredQuery.Register();
+
+        // test only, probably not keeping
+        Framework.TestDivorce.Register();
     }
 
     /// <summary>SMAPI static monitor Log wrapper</summary>

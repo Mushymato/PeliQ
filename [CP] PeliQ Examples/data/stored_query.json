@@ -26,6 +26,18 @@
             "ItemId": "ALL_ITEMS (O)",
             "PerItemCondition": "ITEM_CONTEXT_TAG Target category_fish",
           }
+        ],
+        // debug action mushymato.PeliQ_AddItemByQuery mushymato.PeliQ.Examples_CustomPreserve AllOfTypeItem
+        "{{ModId}}_CustomPreserve": [
+          {
+            "Id": "{{ModId}}_CustomPreserve",
+            "ItemId": "(O)107", // dino egg
+            "ObjectDisplayName": "[LocalizedText Strings\\Objects:SmokedFish_Description %PRESERVED_DISPLAY_NAME]",
+            "ObjectInternalName": "DINO EGG TEST",
+            "PreserveId": "DROP_IN",
+            "CopyColor": true,
+            "InputId": "(O)Moss"
+          }
         ]
       }
     },
