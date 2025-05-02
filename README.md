@@ -72,6 +72,23 @@ These can be used in:
 - Tile Action and TouchAction: `mushymato.PeliQ_AddItemByQuery <queryId> [ItemQuerySearchMode] [isDebris]`
 - Mail: `%peliQ <queryId> [ItemQuerySearchMode] %%` in mail, the items will appear on mail and need to be removed one by one.
 
+The specific flavor of item spawn data used is PeliQSpawnItemData which extends [MachineItemOutput](https://stardewvalleywiki.com/Modding:Machines) with 1 more field `InputId` that acts as the machine input.
+You can spawn custom flavored items like so:
+```json
+"{{ModId}}_CustomPreserve": [
+  {
+    "Id": "{{ModId}}_CustomPreserve",
+    "ItemId": "(O)107", // dino egg
+    "ObjectDisplayName": "[LocalizedText Strings\\Objects:SmokedFish_Description %PRESERVED_DISPLAY_NAME]",
+    "ObjectInternalName": "DINO EGG TEST",
+    "PreserveId": "DROP_IN",
+    "CopyColor": true,
+    "InputId": "(O)Moss"
+  }
+]
+```
+When used with nested item queries, the outer query's results are passed into the inner as `InputId` as well.
+
 ##### ItemQuerySearchMode
 
 One of:
