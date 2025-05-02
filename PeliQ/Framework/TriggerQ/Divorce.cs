@@ -47,12 +47,26 @@ public static class Divorce
 
     private static bool TriggerDivorce(string[] args, TriggerActionContext context, out string error)
     {
-        error = null!;
-        if (Game1.player.isMarriedOrRoommates())
+        if (
+            Game1.player.isMarriedOrRoommates()
+            && ArgUtility.TryGetOptional(
+                args,
+                1,
+                out string? spouse,
+                out error,
+                defaultValue: null,
+                name: "string spouse"
+            )
+        )
         {
-            Game1.player.divorceTonight.Value = true;
-            ModEntry.Log($"Divorcing tonight");
-            return true;
+            if (spouse == null || Game1.player.spouse == spouse)
+            {
+                Game1.player.divorceTonight.Value = true;
+                ModEntry.Log($"Divorcing tonight");
+                return true;
+            }
+            error = $"Cannot divorce because you are not married to {spouse}.";
+            return false;
         }
         error = "Cannot divorce because you are not married.";
         return false;
