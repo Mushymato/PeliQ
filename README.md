@@ -26,14 +26,35 @@ For example, this item query, if placed under a shop Items field, makes that sho
 
 The inner item query:
 
-- is required to have `mushymato.PeliQ_NestedId` as part of `ItemId`, i.e. cannot use non-ItemId queries here
-- can have the generic item query fields, as well as `Condition` GSQ
+- It is required to have `mushymato.PeliQ_NestedId` as part of `ItemId`, i.e. cannot use non-ItemId queries here
+- Alteratively, you can put `mushymato.PeliQ_NestedId` with `InputId`.
 - can only nest once
+- At the moment, this inner query cannot accept certain types, namely lists.
+
+The specific flavor of item spawn data used is `PeliQSpawnItemData` which extends [MachineItemOutput](https://stardewvalleywiki.com/Modding:Machines) with 1 more field `InputId` that acts as the machine input.
+You can spawn custom flavored items like so:
+
+```json
+"ModData": [
+  {
+    "Id": "{{ModId}}_CustomPreserve",
+    "ItemId": "(O)107", // dino egg
+    "ObjectDisplayName": "[LocalizedText Strings\\Objects:SmokedFish_Description %PRESERVED_DISPLAY_NAME]",
+    "ObjectInternalName": "DINO EGG TEST",
+    "PreserveId": "DROP_IN",
+    "CopyColor": true,
+    "InputId": "(O)Moss"
+  }
+]
+```
+
+The outer query's results are passed into the inner as `InputId` if `InputId=mushymato.PeliQ_NestedId`.
 
 ### Stored Item Queries `mushymato.PeliQ/ItemQueries`
 
 Add a new asset for item queries that can be used by key in various places.
 The custom asset is a list of item queries with condition.
+This also uses the mentioned `PeliQSpawnItemData` type.
 
 ```json
 {
@@ -71,23 +92,6 @@ These can be used in:
 - Trigger action: `mushymato.PeliQ_AddItemByQuery <queryId> [ItemQuerySearchMode]`
 - Tile Action and TouchAction: `mushymato.PeliQ_AddItemByQuery <queryId> [ItemQuerySearchMode] [isDebris]`
 - Mail: `%peliQ <queryId> [ItemQuerySearchMode] %%` in mail, the items will appear on mail and need to be removed one by one.
-
-The specific flavor of item spawn data used is PeliQSpawnItemData which extends [MachineItemOutput](https://stardewvalleywiki.com/Modding:Machines) with 1 more field `InputId` that acts as the machine input.
-You can spawn custom flavored items like so:
-```json
-"{{ModId}}_CustomPreserve": [
-  {
-    "Id": "{{ModId}}_CustomPreserve",
-    "ItemId": "(O)107", // dino egg
-    "ObjectDisplayName": "[LocalizedText Strings\\Objects:SmokedFish_Description %PRESERVED_DISPLAY_NAME]",
-    "ObjectInternalName": "DINO EGG TEST",
-    "PreserveId": "DROP_IN",
-    "CopyColor": true,
-    "InputId": "(O)Moss"
-  }
-]
-```
-When used with nested item queries, the outer query's results are passed into the inner as `InputId` as well.
 
 ##### ItemQuerySearchMode
 

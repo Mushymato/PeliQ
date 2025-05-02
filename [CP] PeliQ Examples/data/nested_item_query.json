@@ -11,7 +11,7 @@
         "Items"
       ],
       "Entries": {
-        "{{ModId}}_AllBait": {
+        "{{ModId}}_AllBait_Outer": {
           "Id": "{{ModId}}_AllBait_Outer",
           "ItemId": "ALL_ITEMS (O)",
           "PerItemCondition": "ITEM_CONTEXT_TAG Target category_fish",

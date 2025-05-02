@@ -63,6 +63,11 @@ internal static class NestedQuery
             }
             if (nestedSpawn == null)
                 return;
+            if (
+                nestedSpawn.InputId != ItemQuery_NestedIdToken
+                && !(nestedSpawn.ItemId?.Contains(ItemQuery_NestedIdToken) ?? false)
+            )
+                return;
             List<PeliQSpawnItemData> spawnItemDatas = [nestedSpawn];
             List<ItemQueryResult> nestedResults = [];
             foreach (ItemQueryResult res in __result)
