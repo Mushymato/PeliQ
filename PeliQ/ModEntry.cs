@@ -1,6 +1,8 @@
 global using SObject = StardewValley.Object;
+using System.Diagnostics;
 using HarmonyLib;
 using StardewModdingAPI;
+using StardewValley.Internal;
 
 namespace PeliQ;
 
@@ -25,13 +27,14 @@ public class ModEntry : Mod
         help = helper;
         harm = new(ModId);
 
-        Framework.GameStateQ.CountTrue.Register();
+        Framework.GameStateQ.ItemRegex.Register();
+        Framework.GameStateQ.LogicGates.Register();
         Framework.ItemQ.ActionSalable.Register();
         Framework.ItemQ.NestedQuery.Register();
         Framework.ItemQ.StoredQuery.Register();
 
-        // test only, probably not keeping
-        Framework.TestDivorce.Register();
+        // This is supposed to be in some other framework but alas
+        Framework.TriggerQ.Divorce.Register();
     }
 
     /// <summary>SMAPI static monitor Log wrapper</summary>

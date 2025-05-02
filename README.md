@@ -99,3 +99,31 @@ There are 2 custom fields that can be set on the `Data/Objects` entry of your pl
 
 - `mushymato.PeliQ/ExitOnPurchase`: Exit the menu immediately on purchase
 - `mushymato.PeliQ/PurchaseSound`: Sound to play on purchase
+
+### New Game State Queries
+
+#### mushymato.PeliQ_ITEM_ID_REGEX Target|Input \<regex\>+
+
+- Matches item id or qualified item id against a [regular expression (case insensitive)](https://learn.microsoft.com/en-us/dotnet/standard/base-types/regular-expression-language-quick-reference).
+- First argument is usually Target, but Input if dealing with machine trigger rules.
+
+### mushymato.PeliQ_ANY_N "first GSQ" \<count\> \<"GSQ"\>+
+
+- Evaluate first GSQ, then check that at least `count` number of the following `GSQ`'s results equals the first GSQ's result.
+- For basic usage you can use `TRUE` or `FALSE` as the first GSQ.
+- If the GSQ has spaces, it must be quote escaped.
+
+### mushymato.PeliQ_AND "first GSQ" "second GSQ"
+
+- Evaluate 2 GSQ, and check for AND.
+- Added just for fun, you can already use `GSQ,GSQ` for AND, and `ANY "!GSQ" "!GSQ"` for !AND.
+
+### mushymato.PeliQ_OR "first GSQ" "second GSQ"
+
+- Evaluate 2 GSQ, and check for AND.
+- Added just for fun, you can already use `ANY GSQ GSQ` for OR.
+
+### mushymato.PeliQ_XOR "first GSQ" "second GSQ"
+
+- Evaluate 2 GSQ, and check for XOR (aka first does not equal second).
+- Added just for fun, you can already use `ANY "GSQ,!GSQ" "!GSQ,GSQ"` for XOR.
