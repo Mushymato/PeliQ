@@ -14,32 +14,37 @@ public static class Divorce
 {
     public static string Actions_Divorce => $"{ModEntry.ModId}_Divorce";
 
+    private static readonly string[] FL_ModIds = ["aedenthorn.FreeLove", "ApryllForever.PolyamorySweetLove"];
+
     /// <summary>ApryllForever.PolyamorySweetLove compat</summary>
-    private static IMod? PSL_mod = null;
-    private static FieldInfo? PSL_spouseToDivorce = null;
-    private static FieldInfo? PSL_divorceheartslost = null;
-    private static MethodInfo? PSL_GetSpouses = null;
+    private static IMod? FL_mod = null;
+    private static FieldInfo? FL_spouseToDivorce = null;
+    private static FieldInfo? FL_divorceheartslost = null;
+    private static MethodInfo? FL_GetSpouses = null;
 
     internal static void Register()
     {
-        try
+        foreach (string modId in FL_ModIds)
         {
-            var modInfo = ModEntry.help.ModRegistry.Get("ApryllForever.PolyamorySweetLove");
-            if (modInfo?.GetType().GetProperty("Mod")?.GetValue(modInfo) is IMod mod)
+            try
             {
-                PSL_mod = mod;
-                Type PSL_modType = mod.GetType();
-                PSL_spouseToDivorce = AccessTools.Field(PSL_modType, "spouseToDivorce");
-                PSL_divorceheartslost = AccessTools.Field(PSL_modType, "divorceheartslost");
-                PSL_GetSpouses = AccessTools.Method(PSL_modType, "GetSpouses");
-                ModEntry.Log($"{Actions_Divorce}: PSL Version");
-                TriggerActionManager.RegisterAction(Actions_Divorce, TriggerDivorce_PSL);
-                return;
+                var modInfo = ModEntry.help.ModRegistry.Get(modId);
+                if (modInfo?.GetType().GetProperty("Mod")?.GetValue(modInfo) is IMod mod)
+                {
+                    FL_mod = mod;
+                    Type FL_modType = mod.GetType();
+                    FL_spouseToDivorce = AccessTools.Field(FL_modType, "spouseToDivorce");
+                    FL_divorceheartslost = AccessTools.Field(FL_modType, "divorceheartslost");
+                    FL_GetSpouses = AccessTools.Method(FL_modType, "GetSpouses");
+                    ModEntry.Log($"{Actions_Divorce}: {modId} Version");
+                    TriggerActionManager.RegisterAction(Actions_Divorce, TriggerDivorce_FL);
+                    return;
+                }
             }
-        }
-        catch (Exception err)
-        {
-            ModEntry.Log($"Failed to reflect into ApryllForever.PolyamorySweetLove:\n{err}");
+            catch (Exception err)
+            {
+                ModEntry.Log($"Failed to reflect into {modId}:\n{err}");
+            }
         }
         ModEntry.Log($"{Actions_Divorce}: Vanilla Version");
         TriggerActionManager.RegisterAction(Actions_Divorce, TriggerDivorce);
@@ -72,13 +77,13 @@ public static class Divorce
         return false;
     }
 
-    private static bool TriggerDivorce_PSL(string[] args, TriggerActionContext context, out string error)
+    private static bool TriggerDivorce_FL(string[] args, TriggerActionContext context, out string error)
     {
         if (!ArgUtility.TryGet(args, 1, out string spouse, out error, allowBlank: false, name: "string spouse"))
         {
             return false;
         }
-        if (PSL_GetSpouses?.Invoke(PSL_mod, [Game1.player, true]) is Dictionary<string, NPC> pslSpouses)
+        if (FL_GetSpouses?.Invoke(FL_mod, [Game1.player, true]) is Dictionary<string, NPC> pslSpouses)
         {
             if (!pslSpouses.ContainsKey(spouse))
             {
@@ -87,12 +92,12 @@ public static class Divorce
                 return false;
             }
             Game1.player.divorceTonight.Value = true;
-            PSL_spouseToDivorce?.SetValue(PSL_mod, spouse);
-            PSL_divorceheartslost?.SetValue(PSL_mod, -1);
-            ModEntry.Log($"Divorcing {spouse} tonight (PSL)");
+            FL_spouseToDivorce?.SetValue(FL_mod, spouse);
+            FL_divorceheartslost?.SetValue(FL_mod, -1);
+            ModEntry.Log($"Divorcing {spouse} tonight (FL)");
             return true;
         }
-        error = $"Failed to get spouses from PSL.";
+        error = $"Failed to get spouses from FL.";
         return false;
     }
 }

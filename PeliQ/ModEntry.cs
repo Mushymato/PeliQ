@@ -1,8 +1,6 @@
 global using SObject = StardewValley.Object;
-using System.Diagnostics;
 using HarmonyLib;
 using StardewModdingAPI;
-using StardewValley.Internal;
 
 namespace PeliQ;
 
