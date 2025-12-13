@@ -74,14 +74,15 @@ internal static class NestedQuery
             {
                 if (!GameStateQuery.CheckConditions(nestedSpawn.Condition))
                     continue;
-                if (res.Item != null)
+                if (res.Item is Item inputItem)
                 {
-                    nestedSpawn.InputId = res.Item.QualifiedItemId;
+                    nestedSpawn.InputId = inputItem.QualifiedItemId;
                     nestedResults.AddRange(
                         ItemQueryResolver.TryResolve(
                             nestedSpawn,
                             new ItemQueryContext(context, ItemQuery_NestedSourcePhrase),
-                            formatItemId: (token) => token.Replace(ItemQuery_NestedIdToken, res.Item.QualifiedItemId)
+                            formatItemId: (token) => token.Replace(ItemQuery_NestedIdToken, inputItem.QualifiedItemId),
+                            inputItem: inputItem
                         )
                     );
                 }
