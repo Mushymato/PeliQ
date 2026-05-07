@@ -1,0 +1,38 @@
+{
+  "$schema": "https://smapi.io/schemas/content-patcher.json",
+  "Changes": [
+    // combines salable and stored query to make krobus sell you a random fish
+    {
+      "Action": "EditData",
+      "Target": "mushymato.PeliQ/ItemQueries",
+      "Entries": {
+        "{{ModId}}_Fish": [
+          {
+            "Id": "{{ModId}}_Fish",
+            "ItemId": "ALL_ITEMS (O)",
+            "PerItemCondition": "ITEM_CONTEXT_TAG Target category_fish",
+          }
+        ]
+      }
+    },
+    {
+      "Action": "EditData",
+      "Target": "Data/Shops",
+      "TargetField": [
+        "ShadowShop",
+        "Items"
+      ],
+      "Entries": {
+        "{{ModId}}_FishGambling": {
+          "Id": "{{ModId}}_FishGambling",
+          "ItemId": "mushymato.PeliQ_ACTION_SALABLE SmokedFish",
+          "Price": 100,
+          "ObjectDisplayName": "Fish Gambling",
+          "ActionsOnPurchase": [
+            "mushymato.PeliQ_AddItemByQuery {{ModId}}_Fish RandomOfTypeItem",
+          ]
+        }
+      }
+    }
+  ]
+}

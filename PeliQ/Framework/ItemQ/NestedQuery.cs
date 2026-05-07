@@ -44,6 +44,9 @@ internal static class NestedQuery
     private static void ItemQueryResolver_TryResolve_Postfix(
         ISpawnItemData data,
         ItemQueryContext context,
+        bool avoidRepeat,
+        HashSet<string> avoidItemIds,
+        Action<string, string> logError,
         ref IList<ItemQueryResult> __result
     )
     {
@@ -70,18 +73,22 @@ internal static class NestedQuery
                 return;
             List<PeliQSpawnItemData> spawnItemDatas = [nestedSpawn];
             List<ItemQueryResult> nestedResults = [];
+            bool shouldSetInputId = nestedSpawn.InputId == ItemQuery_NestedIdToken;
             foreach (ItemQueryResult res in __result)
             {
                 if (!GameStateQuery.CheckConditions(nestedSpawn.Condition))
                     continue;
                 if (res.Item is Item inputItem)
                 {
-                    nestedSpawn.InputId = inputItem.QualifiedItemId;
+                    if (shouldSetInputId)
+                        nestedSpawn.InputId = inputItem.QualifiedItemId;
                     nestedResults.AddRange(
-                        ItemQueryResolver.TryResolve(
-                            nestedSpawn,
-                            new ItemQueryContext(context, ItemQuery_NestedSourcePhrase),
+                        nestedSpawn.TryPeliQResolve(
+                            context: new ItemQueryContext(context, ItemQuery_NestedSourcePhrase),
+                            avoidRepeat: avoidRepeat,
+                            avoidItemIds: avoidItemIds,
                             formatItemId: (token) => token.Replace(ItemQuery_NestedIdToken, inputItem.QualifiedItemId),
+                            logError: logError,
                             inputItem: inputItem
                         )
                     );

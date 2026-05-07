@@ -1,7 +1,6 @@
 {
   "$schema": "https://smapi.io/schemas/content-patcher.json",
   "Changes": [
-    // Let Willy sell every kind of bait in the game
     {
       // debug shop FishShop
       "Action": "EditData",
@@ -11,6 +10,7 @@
         "Items"
       ],
       "Entries": {
+        // Let Willy sell every kind of bait in the game
         "{{ModId}}_AllBait_Outer": {
           "Id": "{{ModId}}_AllBait_Outer",
           "ItemId": "ALL_ITEMS (O)",
@@ -21,6 +21,21 @@
             "ItemId": "FLAVORED_ITEM Bait mushymato.PeliQ_NestedId",
             // fine to have other mod data
             "UnrelatedModData": "some value here i suppose"
+          }
+        },
+        // Let Willy sell every kind of fish flavored dino egg in the game
+        "{{ModId}}_AllFishyEggs_Outer": {
+          "Id": "{{ModId}}_AllFishyEggs_Outer",
+          "ItemId": "ALL_ITEMS (O)",
+          "PerItemCondition": "ITEM_CONTEXT_TAG Target category_fish",
+          "ModData": {
+            "Id": "{{ModId}}_AllFishyEggs_Inner",
+            "ItemId": "(O)107", // dino egg
+            "ObjectDisplayName": "[LocalizedText Strings\\Objects:SmokedFish_Description %PRESERVED_DISPLAY_NAME]",
+            "ObjectInternalName": "DINO EGG TEST",
+            "PreserveId": "DROP_IN",
+            "CopyColor": true,
+            "InputId": "mushymato.PeliQ_NestedId"
           }
         }
       }

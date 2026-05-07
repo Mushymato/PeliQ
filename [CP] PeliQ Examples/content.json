@@ -14,5 +14,9 @@
       "Action": "Include",
       "FromFile": "data/stored_query.json"
     },
+    {
+      "Action": "Include",
+      "FromFile": "data/gacha.json"
+    },
   ]
 }
