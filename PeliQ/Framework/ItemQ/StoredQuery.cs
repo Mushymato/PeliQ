@@ -16,9 +16,9 @@ namespace PeliQ.Framework.ItemQ;
 /// </summary>
 internal static class StoredQuery
 {
-    internal static readonly string Asset_ItemQueries = $"{ModEntry.ModId}/ItemQueries";
-    internal static readonly string ItemQuery_STORED_QUERY = $"{ModEntry.ModId}_STORED_QUERY";
-    internal static readonly string Action_AddItemByQuery = $"{ModEntry.ModId}_AddItemByQuery";
+    internal const string Asset_ItemQueries = $"{ModEntry.ModId}/ItemQueries";
+    internal const string ItemQuery_STORED_QUERY = $"{ModEntry.ModId}_STORED_QUERY";
+    internal const string Action_AddItemByQuery = $"{ModEntry.ModId}_AddItemByQuery";
     internal const string MAIL_PELIQ = "%peliQ";
 
     internal static void Register()
@@ -46,12 +46,10 @@ internal static class StoredQuery
         string[] args,
         int start,
         out string error,
-        [NotNullWhen(true)] out List<PeliQSpawnItemData>? spawnDataList,
-        [NotNullWhen(true)] out ItemQuerySearchMode itemQuerySearchMode
+        [NotNullWhen(true)] out List<PeliQSpawnItemData>? spawnDataList
     )
     {
         spawnDataList = null;
-        itemQuerySearchMode = ItemQuerySearchMode.All;
         if (
             !ArgUtility.TryGet(
                 args,
@@ -76,25 +74,41 @@ internal static class StoredQuery
                 out error,
                 "string itemQuerySearchMode"
             )
+            || !ArgUtility.TryGetOptional(
+                args,
+                start + 2,
+                out string? inputItemId,
+                out error,
+                defaultValue: null,
+                name: "string inputItemId"
+            )
         )
             return false;
-        if (!Enum.TryParse(itemQuerySearchModeStr, true, out itemQuerySearchMode))
-            itemQuerySearchMode = ItemQuerySearchMode.AllOfTypeItem;
+        if (Enum.TryParse(itemQuerySearchModeStr, true, out ItemQuerySearchMode searchMode))
+        {
+            foreach (PeliQSpawnItemData spawnData in spawnDataList)
+            {
+                spawnData.SearchMode = searchMode;
+            }
+        }
+        if (inputItemId != null)
+        {
+            foreach (PeliQSpawnItemData spawnData in spawnDataList)
+            {
+                spawnData.InputId = inputItemId;
+            }
+        }
         return true;
     }
 
-    internal static IList<Item> ResolveItemQueryList(
-        List<PeliQSpawnItemData> spawnDataList,
-        ItemQuerySearchMode itemQuerySearchMode,
-        ItemQueryContext context
-    )
+    internal static IList<Item> ResolveItemQueryList(List<PeliQSpawnItemData> spawnDataList, ItemQueryContext context)
     {
         IList<Item> items = [];
         foreach (PeliQSpawnItemData spawnData in spawnDataList)
         {
             if (!GameStateQuery.CheckConditions(spawnData.Condition))
                 continue;
-            IList<ItemQueryResult> results = spawnData.TryPeliQResolve(context: context, filter: itemQuerySearchMode);
+            IList<ItemQueryResult> results = spawnData.TryPeliQResolve(context: context);
             foreach (ItemQueryResult res in results)
             {
                 if (res.Item is Item item)
@@ -125,19 +139,9 @@ internal static class StoredQuery
             mailSpan = mail.AsSpan();
             mail = string.Concat(mailSpan[..start], mailSpan[(start + text.Length)..]);
             string[] args = ArgUtility.SplitBySpace(text);
-            if (
-                !TryGetItemQueryData(
-                    args,
-                    1,
-                    out string _,
-                    out List<PeliQSpawnItemData>? spawnDataList,
-                    out ItemQuerySearchMode itemQuerySearchMode
-                )
-            )
+            if (!TryGetItemQueryData(args, 1, out string _, out List<PeliQSpawnItemData>? spawnDataList))
                 return;
-            foreach (
-                Item item in ResolveItemQueryList(spawnDataList, itemQuerySearchMode, new(null, null, null, args[0]))
-            )
+            foreach (Item item in ResolveItemQueryList(spawnDataList, new(null, null, null, args[0])))
             {
                 __instance.itemsToGrab.Add(
                     new ClickableComponent(
@@ -169,20 +173,12 @@ internal static class StoredQuery
 
     private static bool TileActionAdditemByQuery(GameLocation location, string[] args, Farmer farmer, Point point)
     {
-        if (
-            !TryGetItemQueryData(
-                args,
-                1,
-                out string error,
-                out List<PeliQSpawnItemData>? spawnDataList,
-                out ItemQuerySearchMode itemQuerySearchMode
-            )
-        )
+        if (!TryGetItemQueryData(args, 1, out string error, out List<PeliQSpawnItemData>? spawnDataList))
             return false;
         if (
             !ArgUtility.TryGetOptionalBool(
                 args,
-                3,
+                4,
                 out bool asDebris,
                 out error,
                 defaultValue: true,
@@ -191,7 +187,7 @@ internal static class StoredQuery
         )
             return false;
 
-        var items = ResolveItemQueryList(spawnDataList, itemQuerySearchMode, new(location, farmer, null, args[0]));
+        var items = ResolveItemQueryList(spawnDataList, new(location, farmer, null, args[0]));
         if (!items.Any())
             return false;
         if (asDebris)
@@ -217,17 +213,9 @@ internal static class StoredQuery
 
     private static bool TriggerActionAddItemByQuery(string[] args, TriggerActionContext context, out string error)
     {
-        if (
-            !TryGetItemQueryData(
-                args,
-                1,
-                out error,
-                out List<PeliQSpawnItemData>? spawnDataList,
-                out ItemQuerySearchMode itemQuerySearchMode
-            )
-        )
+        if (!TryGetItemQueryData(args, 1, out error, out List<PeliQSpawnItemData>? spawnDataList))
             return false;
-        var items = ResolveItemQueryList(spawnDataList, itemQuerySearchMode, new(null, null, null, args[0]));
+        var items = ResolveItemQueryList(spawnDataList, new(null, null, null, args[0]));
         if (items.Any())
         {
             Game1.player.addItemsByMenuIfNecessary(items.ToList());
@@ -247,15 +235,7 @@ internal static class StoredQuery
     {
         ModEntry.Log($"{key} {arguments}");
         string[] args = ItemQueryResolver.Helpers.SplitArguments(arguments);
-        if (
-            !TryGetItemQueryData(
-                args,
-                0,
-                out string error,
-                out List<PeliQSpawnItemData>? spawnDataList,
-                out ItemQuerySearchMode itemQuerySearchMode
-            )
-        )
+        if (!TryGetItemQueryData(args, 0, out string error, out List<PeliQSpawnItemData>? spawnDataList))
         {
             ItemQueryResolver.Helpers.ErrorResult(key, arguments, logError, error);
             yield break;
@@ -265,7 +245,6 @@ internal static class StoredQuery
             foreach (
                 ItemQueryResult res in spawnData.TryPeliQResolve(
                     new ItemQueryContext(context, $"{context.SourcePhrase} {key}"),
-                    filter: itemQuerySearchMode,
                     avoidRepeat: avoidRepeat,
                     avoidItemIds: avoidItemIds,
                     logError: logError

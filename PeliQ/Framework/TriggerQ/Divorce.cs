@@ -12,7 +12,7 @@ namespace PeliQ.Framework.TriggerQ;
 /// </summary>
 public static class Divorce
 {
-    public static string Actions_Divorce => $"{ModEntry.ModId}_Divorce";
+    public const string Actions_Divorce = $"{ModEntry.ModId}_Divorce";
 
     private static readonly string[] FL_ModIds = ["aedenthorn.FreeLove", "ApryllForever.PolyamorySweetLove"];
 

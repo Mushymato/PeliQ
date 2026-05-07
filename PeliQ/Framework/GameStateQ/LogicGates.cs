@@ -6,10 +6,10 @@ namespace PeliQ.Framework.GameStateQ;
 
 public static class LogicGates
 {
-    public static string GameStateQuery_ANY_N => $"{ModEntry.ModId}_ANY_N";
-    public static string GameStateQuery_AND => $"{ModEntry.ModId}_AND";
-    public static string GameStateQuery_OR => $"{ModEntry.ModId}_OR";
-    public static string GameStateQuery_XOR => $"{ModEntry.ModId}_XOR";
+    public const string GameStateQuery_ANY_N = $"{ModEntry.ModId}_ANY_N";
+    public const string GameStateQuery_AND = $"{ModEntry.ModId}_AND";
+    public const string GameStateQuery_OR = $"{ModEntry.ModId}_OR";
+    public const string GameStateQuery_XOR = $"{ModEntry.ModId}_XOR";
 
     internal static void Register()
     {

@@ -24,28 +24,26 @@ For example, this item query, if placed under a shop Items field, makes that sho
 }
 ```
 
-The inner item query:
-
-- It is required to have `mushymato.PeliQ_NestedId` as part of `ItemId`, i.e. cannot use non-ItemId queries here
-- Alteratively, you can put `mushymato.PeliQ_NestedId` with `InputId`.
-- can only nest once
-- At the moment, this inner query cannot accept certain types, namely lists.
-
 The specific flavor of item spawn data used is `PeliQSpawnItemData` which extends [MachineItemOutput](https://stardewvalleywiki.com/Modding:Machines) with 1 more field `InputId` that acts as the machine input.
-You can spawn custom flavored items like so:
+
+Limitation: the inner query cannot accept lists or dictionary, this means `RandomItemId` and `ModData` do not work inside a nested query. Consider using `mushymato.PeliQ_STORED_QUERY` if you need more control.
+
+The inner item query must have `mushymato.PeliQ_NestedId` in at least 1 of these 3 places:
+- `ItemId`
+- `InputId`
+
+The custom `InputId` field exists for usage with `DROP_IN`, you can spawn custom flavored items like so:
 
 ```json
-"ModData": [
-  {
-    "Id": "{{ModId}}_CustomPreserve",
-    "ItemId": "(O)107", // dino egg
-    "ObjectDisplayName": "[LocalizedText Strings\\Objects:SmokedFish_Description %PRESERVED_DISPLAY_NAME]",
-    "ObjectInternalName": "DINO EGG TEST",
-    "PreserveId": "DROP_IN",
-    "CopyColor": true,
-    "InputId": "(O)Moss"
-  }
-]
+"ModData": {
+  "Id": "{{ModId}}_CustomPreserve",
+  "ItemId": "(O)107", // dino egg
+  "ObjectDisplayName": "[LocalizedText Strings\\Objects:SmokedFish_Description %PRESERVED_DISPLAY_NAME]",
+  "ObjectInternalName": "DINO EGG TEST",
+  "PreserveId": "DROP_IN",
+  "CopyColor": true,
+  "InputId": "(O)Moss"
+}
 ```
 
 The outer query's results are passed into the inner as `InputId` if `InputId=mushymato.PeliQ_NestedId`.
@@ -88,10 +86,10 @@ This also uses the mentioned `PeliQSpawnItemData` type.
 
 These can be used in:
 
-- Item queries: `mushymato.PeliQ_STORED_QUERY <queryId>` in the ItemId of another ItemQuery
-- Trigger action: `mushymato.PeliQ_AddItemByQuery <queryId> [ItemQuerySearchMode]`
-- Tile Action and TouchAction: `mushymato.PeliQ_AddItemByQuery <queryId> [ItemQuerySearchMode] [isDebris]`
-- Mail: `%peliQ <queryId> [ItemQuerySearchMode] %%` in mail, the items will appear on mail and need to be removed one by one.
+- Item queries: `mushymato.PeliQ_STORED_QUERY <queryId> [ItemQuerySearchMode] [inputItemId]` in the ItemId of another ItemQuery
+- Trigger action: `mushymato.PeliQ_AddItemByQuery <queryId> [ItemQuerySearchMode] [inputItemId]`
+- Tile Action and TouchAction: `mushymato.PeliQ_AddItemByQuery <queryId> [ItemQuerySearchMode] [inputItemId] [isDebris]`
+- Mail: `%peliQ <queryId> [ItemQuerySearchMode] [inputItemId]%%` in mail, the items will appear on mail and need to be removed one by one.
 
 ##### ItemQuerySearchMode
 

@@ -7,6 +7,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ## [1.2.0] - 2026-05-06
 
 - Improved support for custom flavored items in nested item queries.
+- Add 3rd argument inputItemId to all stored query
 
 ## [1.1.2] - 2025-08-05
 

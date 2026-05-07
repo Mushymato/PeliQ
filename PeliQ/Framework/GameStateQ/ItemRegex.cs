@@ -7,7 +7,7 @@ namespace PeliQ.Framework.GameStateQ;
 
 public static class ItemRegex
 {
-    public static string GameStateQuery_ITEM_ID_REGEX => $"{ModEntry.ModId}_ITEM_ID_REGEX";
+    public const string GameStateQuery_ITEM_ID_REGEX = $"{ModEntry.ModId}_ITEM_ID_REGEX";
 
     internal static void Register()
     {

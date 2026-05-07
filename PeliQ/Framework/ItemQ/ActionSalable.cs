@@ -7,7 +7,7 @@ namespace PeliQ.Framework.ItemQ;
 /// <summary>Bogus salable for purpose of running purchase actions without obtaining any actual item</summary>
 public static class ActionSalable
 {
-    public static string ItemQuery_ACTION_SALABLE => $"{ModEntry.ModId}_ACTION_SALABLE";
+    public const string ItemQuery_ACTION_SALABLE = $"{ModEntry.ModId}_ACTION_SALABLE";
 
     internal static void Register()
     {

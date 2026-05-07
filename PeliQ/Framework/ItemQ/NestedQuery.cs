@@ -10,8 +10,8 @@ namespace PeliQ.Framework.ItemQ;
 /// <summary>Allow item queries to be nested via ModData</summary>
 internal static class NestedQuery
 {
-    private static string ItemQuery_NestedSourcePhrase => $"{ModEntry.ModId}_NestedResolve";
-    private static string ItemQuery_NestedIdToken => $"{ModEntry.ModId}_NestedId";
+    private const string ItemQuery_NestedSourcePhrase = $"{ModEntry.ModId}_NestedResolve";
+    private const string ItemQuery_NestedIdToken = $"{ModEntry.ModId}_NestedId";
 
     internal static void Register()
     {

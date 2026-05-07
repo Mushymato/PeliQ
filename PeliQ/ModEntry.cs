@@ -16,7 +16,7 @@ public class ModEntry : Mod
     internal static IModHelper help = null!;
     internal static Harmony harm = null!;
 
-    internal static string ModId => manifest?.UniqueID ?? "ERROR";
+    internal const string ModId = "mushymato.PeliQ";
 
     public override void Entry(IModHelper helper)
     {

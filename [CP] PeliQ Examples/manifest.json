@@ -1,0 +1,20 @@
+{
+  "Name": "[CP] PeliQ Examples",
+  "Author": "mushymato",
+  "Version": "0.1.0",
+  "Description": "PeliQ examples",
+  "UniqueID": "mushymato.PeliQ.Examples",
+  "MinimumApiVersion": "4.0.0",
+  "UpdateKeys": [
+    "Nexus:???"
+  ],
+  "ContentPackFor": {
+    "UniqueID": "Pathoschild.ContentPatcher"
+  },
+  "Dependencies": [
+    {
+      "UniqueID": "mushymato.PeliQ",
+      "IsRequired": true
+    }
+  ]
+}

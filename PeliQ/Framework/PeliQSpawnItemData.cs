@@ -11,10 +11,10 @@ namespace PeliQ.Framework;
 public class PeliQSpawnItemData : MachineItemOutput
 {
     public string? InputId { get; set; } = null;
+    public ItemQuerySearchMode SearchMode { get; set; } = ItemQuerySearchMode.AllOfTypeItem;
 
     public IList<ItemQueryResult> TryPeliQResolve(
         ItemQueryContext context,
-        ItemQuerySearchMode filter = ItemQuerySearchMode.All,
         bool avoidRepeat = false,
         HashSet<string>? avoidItemIds = null,
         Func<string, string>? formatItemId = null,
@@ -25,7 +25,7 @@ public class PeliQSpawnItemData : MachineItemOutput
         IList<ItemQueryResult> results = ItemQueryResolver.TryResolve(
             this,
             context,
-            filter: filter,
+            filter: SearchMode,
             avoidRepeat,
             avoidItemIds,
             formatItemId,
