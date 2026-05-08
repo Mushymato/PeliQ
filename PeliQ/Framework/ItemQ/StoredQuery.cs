@@ -84,18 +84,21 @@ internal static class StoredQuery
             )
         )
             return false;
-        if (Enum.TryParse(itemQuerySearchModeStr, true, out ItemQuerySearchMode searchMode))
+        if (
+            itemQuerySearchModeStr != "T"
+            && Enum.TryParse(itemQuerySearchModeStr, true, out ItemQuerySearchMode searchMode)
+        )
         {
             foreach (PeliQSpawnItemData spawnData in spawnDataList)
             {
-                spawnData.SearchMode = searchMode;
+                spawnData.ArgSearchMode = searchMode;
             }
         }
         if (inputItemId != null)
         {
             foreach (PeliQSpawnItemData spawnData in spawnDataList)
             {
-                spawnData.InputId = inputItemId;
+                spawnData.ArgInputId = inputItemId;
             }
         }
         return true;

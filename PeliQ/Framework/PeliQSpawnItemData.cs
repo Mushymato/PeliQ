@@ -13,6 +13,9 @@ public class PeliQSpawnItemData : MachineItemOutput
     public string? InputId { get; set; } = null;
     public ItemQuerySearchMode SearchMode { get; set; } = ItemQuerySearchMode.AllOfTypeItem;
 
+    internal string? ArgInputId { get; set; } = null;
+    internal ItemQuerySearchMode? ArgSearchMode { get; set; } = null;
+
     public IList<ItemQueryResult> TryPeliQResolve(
         ItemQueryContext context,
         bool avoidRepeat = false,
@@ -25,7 +28,7 @@ public class PeliQSpawnItemData : MachineItemOutput
         IList<ItemQueryResult> results = ItemQueryResolver.TryResolve(
             this,
             context,
-            filter: SearchMode,
+            filter: ArgSearchMode ?? SearchMode,
             avoidRepeat,
             avoidItemIds,
             formatItemId,
@@ -41,6 +44,9 @@ public class PeliQSpawnItemData : MachineItemOutput
             }
         }
 
+        ArgSearchMode = null;
+        ArgInputId = null;
+
         return results;
     }
 
@@ -51,8 +57,9 @@ public class PeliQSpawnItemData : MachineItemOutput
     )
     {
         Item? preserveItem = null;
-        if (!string.IsNullOrEmpty(spawnData.InputId))
-            preserveItem = ItemRegistry.Create(spawnData.InputId);
+        string? inputId = spawnData.ArgInputId ?? spawnData.InputId;
+        if (!string.IsNullOrEmpty(inputId))
+            preserveItem = ItemRegistry.Create(inputId);
         if (preserveItem == null && !string.IsNullOrEmpty(spawnData.PreserveId))
             preserveItem = ItemRegistry.Create(spawnData.PreserveId);
         if (preserveItem == null)

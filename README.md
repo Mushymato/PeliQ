@@ -24,7 +24,9 @@ For example, this item query, if placed under a shop Items field, makes that sho
 }
 ```
 
-The specific flavor of item spawn data used is `PeliQSpawnItemData` which extends [MachineItemOutput](https://stardewvalleywiki.com/Modding:Machines) with 1 more field `InputId` that acts as the machine input.
+The specific flavor of item spawn data used is `PeliQSpawnItemData` which extends [MachineItemOutput](https://stardewvalleywiki.com/Modding:Machines) with 2 more fields
+- `InputId`, acts as the machine input.
+- `SearchMode`, the item query search mode.
 
 Limitation: the inner query cannot accept lists or dictionary, this means `RandomItemId` and `ModData` do not work inside a nested query. Consider using `mushymato.PeliQ_STORED_QUERY` if you need more control.
 
@@ -95,12 +97,15 @@ These can be used in:
 
 One of:
 
+- `T`
 - `All`
 - `AllOfTypeItem`
 - `FirstOfTypeItem`
 - `RandomOfTypeItem`
 
 The default is `AllOfTypeItem`, note that these are applied to every query in the list, so if you have 3 queries that each give 1 specific item (like the `{{ModId}}_Jelly` example) and use `RandomOfTypeItem`, you will get 3 jellies because 3 item queries have ran. Use fields like `RandomItemId` to randomize one item query.
+
+Using `T` will ignore this arg in favor of the `SearchMode` field on each individual query.
 
 ##### isDebris
 

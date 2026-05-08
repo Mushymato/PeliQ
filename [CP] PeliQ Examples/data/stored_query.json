@@ -25,6 +25,7 @@
             "Id": "{{ModId}}_Fish",
             "ItemId": "ALL_ITEMS (O)",
             "PerItemCondition": "ITEM_CONTEXT_TAG Target category_fish",
+            "SearchMode": "RandomOfTypeItem"
           }
         ],
         // debug action mushymato.PeliQ_AddItemByQuery mushymato.PeliQ.Examples_CustomPreserve AllOfTypeItem
@@ -70,7 +71,7 @@
           },
           "Layer": "Back",
           "SetProperties": {
-            "TouchAction": "mushymato.PeliQ_AddItemByQuery {{ModId}}_Fish RandomOfTypeItem"
+            "TouchAction": "mushymato.PeliQ_AddItemByQuery {{ModId}}_Fish"
           }
         },
         {
