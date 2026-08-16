@@ -126,7 +126,6 @@ internal static class StoredQuery
     private static void LetterViewerMenu_HandleItemCommand_Postfix(LetterViewerMenu __instance, ref string __result)
     {
         string mail = __result;
-        ModEntry.Log(mail);
         int startIndex = 0;
         int start;
         int end;

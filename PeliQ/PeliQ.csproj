@@ -19,7 +19,7 @@
     <Description>Query related utilities</Description>
     <UniqueId>mushymato.PeliQ</UniqueId>
     <UpdateKeys>Nexus:31832,GitHub:Mushymato/PeliQ</UpdateKeys>
-    <Version>1.2.0</Version>
+    <Version>1.2.1</Version>
     <MinimumApiVersion_Behavior>Update</MinimumApiVersion_Behavior>
     <MinimumGameVersion_Behavior>UpdateFull</MinimumGameVersion_Behavior>
     <Dependencies_VersionBehavior>Ignore</Dependencies_VersionBehavior>
